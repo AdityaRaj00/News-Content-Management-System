@@ -1,0 +1,206 @@
+-- ---------------------------------------------------------------------------------------------------------------------
+-- 1. DATABASE SCHEMA
+-- ---------------------------------------------------------------------------------------------------------------------
+-- Table to store user information and roles
+CREATE TABLE users (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    full_name VARCHAR(100),
+    role ENUM('admin', 'editor', 'subscriber', 'guest') DEFAULT 'guest',
+    registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_user_role (role)
+);
+
+-- Table to store news articles and their metadata
+CREATE TABLE articles (
+    article_id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    summary VARCHAR(500),
+    author_id INT NOT NULL,
+    publish_date DATETIME,
+    status ENUM('draft', 'published', 'archived') DEFAULT 'draft',
+    views INT DEFAULT 0,
+    likes INT DEFAULT 0,
+    seo_meta_title VARCHAR(255),
+    seo_meta_description VARCHAR(500),
+    seo_keywords VARCHAR(255),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (author_id) REFERENCES users(user_id),
+    FULLTEXT(title, content)
+);
+
+-- Table for hierarchical categories 
+CREATE TABLE categories (
+    category_id INT AUTO_INCREMENT PRIMARY KEY,
+    category_name VARCHAR(100) NOT NULL UNIQUE,
+    description VARCHAR(255),
+    parent_category_id INT DEFAULT NULL,
+    FOREIGN KEY (parent_category_id) REFERENCES categories(category_id) ON DELETE SET NULL,
+    INDEX idx_category_parent (parent_category_id)
+);
+
+-- Join table for the many-to-many relationship between articles and categories 
+CREATE TABLE article_categories (
+    article_id INT,
+    category_id INT,
+    PRIMARY KEY (article_id, category_id),
+    FOREIGN KEY (article_id) REFERENCES articles(article_id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES categories(category_id) ON DELETE CASCADE
+);
+
+-- Table to store tags
+CREATE TABLE tags (
+    tag_id INT AUTO_INCREMENT PRIMARY KEY,
+    tag_name VARCHAR(50) NOT NULL UNIQUE,
+    description VARCHAR(255)
+);
+
+-- Join table for the many-to-many relationship between articles and tags
+CREATE TABLE article_tags (
+    article_id INT,
+    tag_id INT,
+    PRIMARY KEY (article_id, tag_id),
+    FOREIGN KEY (article_id) REFERENCES articles(article_id) ON DELETE CASCADE,
+    FOREIGN KEY (tag_id) REFERENCES tags(tag_id) ON DELETE CASCADE
+);
+
+-- Table to store user comments on articles, with support for nested comments
+CREATE TABLE comments (
+    comment_id INT AUTO_INCREMENT PRIMARY KEY,
+    article_id INT NOT NULL,
+    user_id INT,
+    parent_comment_id INT DEFAULT NULL,
+    comment_content TEXT NOT NULL,
+    status ENUM('pending', 'approved', 'rejected') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (article_id) REFERENCES articles(article_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE SET NULL,
+    FOREIGN KEY (parent_comment_id) REFERENCES comments(comment_id) ON DELETE SET NULL,
+    INDEX idx_comment_article_user (article_id, user_id),
+    INDEX idx_comment_status (status)
+);
+
+-- Table to store images and other media associated with articles
+CREATE TABLE media (
+    media_id INT AUTO_INCREMENT PRIMARY KEY,
+    article_id INT NOT NULL,
+    media_url VARCHAR(255) NOT NULL,
+    media_type VARCHAR(50),
+    FOREIGN KEY (article_id) REFERENCES articles(article_id) ON DELETE CASCADE
+);
+
+-- Table to log admin actions for an audit trail
+CREATE TABLE audit_log (
+    log_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT,
+    action_type ENUM('article_create', 'article_edit', 'article_delete', 'comment_approve', 'comment_reject', 'comment_delete') NOT NULL,
+    target_id INT,
+    action_timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE SET NULL
+);
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- 2. SAMPLE DATA INSERTION
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- Insert sample users with different roles
+INSERT INTO users (username, password_hash, email, full_name, role) VALUES
+('admin_user', 'hashed_password_1', 'admin@example.com', 'Admin User', 'admin'),
+('editor_user', 'hashed_password_2', 'editor@example.com', 'Editor User', 'editor'),
+('subscriber_user', 'hashed_password_3', 'subscriber@example.com', 'Subscriber User', 'subscriber');
+
+-- Insert sample categories and a sub-category
+INSERT INTO categories (category_name, description) VALUES
+('Technology', 'Articles about technology and gadgets.'),
+('World News', 'Global news and current events.'),
+('Sports', 'Latest sports news and updates.');
+
+-- Insert a sample article by the editor
+INSERT INTO articles (title, content, summary, author_id, publish_date, status) VALUES
+('AI Revolution in 2025', 'The content of the article about AI...', 'A summary of the AI article.', 2, NOW(), 'published'),
+('New Tech Gadgets', 'Details on the latest tech gadgets.', 'Summary of new gadgets.', 2, NOW(), 'published');
+
+-- Link articles to categories
+INSERT INTO article_categories (article_id, category_id) VALUES
+(1, 1),
+(2, 1);
+
+-- Insert sample tags
+INSERT INTO tags (tag_name) VALUES
+('AI'),
+('Gadgets'),
+('Innovation');
+
+-- Link articles to tags
+INSERT INTO article_tags (article_id, tag_id) VALUES
+(1, 1),
+(1, 3),
+(2, 2);
+
+-- Insert a sample comment on an article
+INSERT INTO comments (article_id, user_id, comment_content, status) VALUES
+(1, 3, 'Great article!', 'approved');
+
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- 3. CORE SQL QUERIES
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- Query to retrieve an article with its author's username
+SELECT a.*, u.username AS author_name
+FROM articles a
+JOIN users u ON a.author_id = u.user_id
+WHERE a.article_id = 1;
+
+-- Query for full-text search on article titles and content
+SELECT * FROM articles WHERE MATCH(title, content) AGAINST('AI Revolution' IN NATURAL LANGUAGE MODE);
+
+-- Query to filter search results by category and tag
+SELECT DISTINCT a.*
+FROM articles a
+JOIN article_categories ac ON a.article_id = ac.article_id
+JOIN categories c ON ac.category_id = c.category_id
+JOIN article_tags at ON a.article_id = at.article_id
+JOIN tags t ON at.tag_id = t.tag_id
+WHERE a.status = 'published' AND c.category_name = 'Technology' AND t.tag_name IN ('AI', 'Innovation');
+
+-- Query to retrieve all comments for a specific article
+SELECT * FROM comments WHERE article_id = 1 ORDER BY created_at ASC;
+
+-- Query to get comments awaiting moderation
+SELECT c.*, u.username
+FROM comments c
+JOIN users u ON c.user_id = u.user_id
+WHERE c.status = 'pending';
+
+-- Query to approve a comment
+UPDATE comments SET status = 'approved' WHERE comment_id = 1;
+
+-- ---------------------------------------------------------------------------------------------------------------------
+-- 4. ADVANCED FEATURES (STORED PROCEDURES & TRIGGERS)
+-- ---------------------------------------------------------------------------------------------------------------------
+
+-- Stored procedure to publish a draft article and set the publish date [cite: 42, 43]
+DELIMITER $$
+CREATE PROCEDURE publish_article(IN article_id_param INT)
+BEGIN
+    UPDATE articles
+    SET status = 'published', publish_date = NOW()
+    WHERE article_id = article_id_param AND status = 'draft';
+END$$
+DELIMITER ;
+
+-- Trigger to log a new record in the audit trail after an article is deleted
+DELIMITER $$
+CREATE TRIGGER after_article_delete_log
+AFTER DELETE ON articles
+FOR EACH ROW
+BEGIN
+    INSERT INTO audit_log (user_id, action_type, target_id)
+    VALUES (NULL, 'article_delete', OLD.article_id);
+END$$
+DELIMITER ;
