@@ -57,18 +57,16 @@ Python 3.7+
 
 Install required libraries:
 
-bash
-Copy code
-pip install requests beautifulsoup4
+    ```bash
+      pip install requests beautifulsoup4
 
 ▶️ How to Run
 Navigate to the project directory in your terminal.
 
 Run the script:
 
-bash
-Copy code
-python scraper.py
+    ```bash
+      python scraper.py
 When prompted, enter the full URL of a news article you wish to scrape.
 
 The scraped content will be printed directly to your console.
