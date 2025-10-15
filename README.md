@@ -78,18 +78,15 @@ The main.py tool acts as the content acquisition pipeline.
 The scraped data can then be processed and inserted into the database defined in schema.sql to populate the CMS with articles, categories, and user interactions.
 
 ## 🧱 Tech Stack
-### Component	Technology
-1.**Backend Language**- Python
-
-2.**Web Scraping**- Requests, BeautifulSoup
-
-### Database 
-
-**MySQL / PostgreSQL**
-
-### Schema Definition	
-
-**SQL (DDL, DML, Triggers, Procedures)**
+|**Component**|**Technology**|
+|----- |-----|
+|**Backend Language**|Python|
+|----- |-----|
+|**Web Scraping**|Requests, BeautifulSoup|
+|----- |-----|
+|**Database**|MySQL / PostgreSQL|
+|----- |-----|
+|**Schema Definition**|	SQL (DDL, DML, Triggers, Procedures)|
 
 ### ⚠️ Disclaimer
 This project is intended for educational and personal development purposes.
