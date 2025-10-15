@@ -60,6 +60,7 @@ Install required libraries:
 bash
 Copy code
 pip install requests beautifulsoup4
+
 ▶️ How to Run
 Navigate to the project directory in your terminal.
 
