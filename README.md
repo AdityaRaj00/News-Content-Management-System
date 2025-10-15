@@ -87,5 +87,3 @@ Schema Definition	SQL (DDL, DML, Triggers, Procedures)
 This project is intended for educational and personal development purposes.
 Web scraping should be performed responsibly and in compliance with each website’s Terms of Service.
 
-📜 License
-This project is licensed under the MIT License — feel free to use and modify it as needed.
