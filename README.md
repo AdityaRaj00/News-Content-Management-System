@@ -78,10 +78,10 @@ The scraped data can then be processed and inserted into the database defined in
 
 ## 🧱 Tech Stack
 ### Component	Technology
-1.**Backend Language**	Python
-2.**Web Scraping**	Requests, BeautifulSoup
-### Database	MySQL / PostgreSQL
-### Schema Definition	SQL (DDL, DML, Triggers, Procedures)
+1.**Backend Language**- Python
+2.**Web Scraping**- Requests, BeautifulSoup
+### Database - **MySQL / PostgreSQL**
+### Schema Definition	- **SQL (DDL, DML, Triggers, Procedures)**
 
 ### ⚠️ Disclaimer
 This project is intended for educational and personal development purposes.
