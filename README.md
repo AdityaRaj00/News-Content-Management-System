@@ -10,7 +10,7 @@ It includes a robust SQL database schema for storing and managing news content, 
 This project is divided into two main parts:
 
 1. **Database Schema (`schema.sql`)** — The blueprint for the entire CMS backend.  
-2. **Article Scraper (`scraper.py`)** — A command-line tool to fetch content from news websites.
+2. **Article Scraper (`main.py`)** — A command-line tool to fetch content from news websites.
 
 ---
 
@@ -49,7 +49,7 @@ It is designed for relational databases such as **MySQL** or **PostgreSQL**.
    ```bash
    # Example for MySQL
    mysql -u your_username -p news_cms < schema.sql
-## 🕸️ 2. Article Scraper (scraper.py)
+## 🕸️ 2. Article Scraper (main.py)
 A Python-based CLI tool that extracts key information such as title, author, summary, and main content from online news articles.
 
 ### 🧠 Prerequisites
@@ -64,7 +64,7 @@ Navigate to the project directory in your terminal.
 
 Run the script:
     
-       python scraper.py
+       python main.py
 When prompted, enter the full URL of a news article you wish to scrape.
 
 The scraped content will be printed directly to your console.
@@ -72,7 +72,7 @@ The scraped content will be printed directly to your console.
 ## 🔄 How the Components Work Together
 This repository provides the foundational backend for a news publishing platform.
 
-The scraper.py tool acts as the content acquisition pipeline.
+The main.py tool acts as the content acquisition pipeline.
 
 The scraped data can then be processed and inserted into the database defined in schema.sql to populate the CMS with articles, categories, and user interactions.
 
