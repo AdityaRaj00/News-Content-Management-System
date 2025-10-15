@@ -1,5 +1,6 @@
 # 📰 News Content Management System (Backend)
 ![Python](https://img.shields.io/badge/Python-3.7%2B-blue?logo=python)
+
 This repository contains the backend components for a comprehensive **News Content Management System (CMS)**.  
 It includes a robust SQL database schema for storing and managing news content, and a Python-based web scraper for acquiring articles from URLs.
 
@@ -79,9 +80,16 @@ The scraped data can then be processed and inserted into the database defined in
 ## 🧱 Tech Stack
 ### Component	Technology
 1.**Backend Language**- Python
+
 2.**Web Scraping**- Requests, BeautifulSoup
-### Database - **MySQL / PostgreSQL**
-### Schema Definition	- **SQL (DDL, DML, Triggers, Procedures)**
+
+### Database 
+
+**MySQL / PostgreSQL**
+
+### Schema Definition	
+
+**SQL (DDL, DML, Triggers, Procedures)**
 
 ### ⚠️ Disclaimer
 This project is intended for educational and personal development purposes.
