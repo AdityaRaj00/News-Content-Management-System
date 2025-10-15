@@ -49,17 +49,17 @@ It is designed for relational databases such as **MySQL** or **PostgreSQL**.
    ```bash
    # Example for MySQL
    mysql -u your_username -p news_cms < schema.sql
-🕸️ 2. Article Scraper (scraper.py)
+## 🕸️ 2. Article Scraper (scraper.py)
 A Python-based CLI tool that extracts key information such as title, author, summary, and main content from online news articles.
 
-##🧠 Prerequisites
+### 🧠 Prerequisites
 1.Python 3.7+
 
 2.Install required libraries:
 
       pip install requests beautifulsoup4
 
-##▶️ How to Run
+### ▶️ How to Run
 Navigate to the project directory in your terminal.
 
 Run the script:
@@ -69,21 +69,21 @@ When prompted, enter the full URL of a news article you wish to scrape.
 
 The scraped content will be printed directly to your console.
 
-###🔄 How the Components Work Together
+## 🔄 How the Components Work Together
 This repository provides the foundational backend for a news publishing platform.
 
 The scraper.py tool acts as the content acquisition pipeline.
 
 The scraped data can then be processed and inserted into the database defined in schema.sql to populate the CMS with articles, categories, and user interactions.
 
-###🧱 Tech Stack
-##Component	Technology
+## 🧱 Tech Stack
+### Component	Technology
 1.**Backend Language**	Python
 2.**Web Scraping**	Requests, BeautifulSoup
-##Database	MySQL / PostgreSQL
-##Schema Definition	SQL (DDL, DML, Triggers, Procedures)
+### Database	MySQL / PostgreSQL
+### Schema Definition	SQL (DDL, DML, Triggers, Procedures)
 
-###⚠️ Disclaimer
+### ⚠️ Disclaimer
 This project is intended for educational and personal development purposes.
 Web scraping should be performed responsibly and in compliance with each website’s Terms of Service.
 
