@@ -81,11 +81,8 @@ The scraped data can then be processed and inserted into the database defined in
 |**Component**|**Technology**|
 |----- |-----|
 |**Backend Language**|Python|
-|----- |-----|
 |**Web Scraping**|Requests, BeautifulSoup|
-|----- |-----|
 |**Database**|MySQL / PostgreSQL|
-|----- |-----|
 |**Schema Definition**|	SQL (DDL, DML, Triggers, Procedures)|
 
 ### ⚠️ Disclaimer
